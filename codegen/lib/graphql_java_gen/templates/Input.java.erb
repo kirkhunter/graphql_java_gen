@@ -91,7 +91,7 @@ public class <%= type.name %> implements Serializable {
                 separator = ",";
                 _queryBuilder.append("<%= field.name %>:");
                 if (<%= escape_reserved_word(field.camelize_name) %>.getValue() != null) {
-                    <%= generate_build_input_code(escape_reserved_word(field.camelize_name).concat(".getValue()"), field.type, depth) %>
+                    <%= generate_build_input_code(escape_reserved_word(field.camelize_name).concat(".getValue()"), field.type, depth + 1) %>
                 } else {
                     _queryBuilder.append("null");
                 }
