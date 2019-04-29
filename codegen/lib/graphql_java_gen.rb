@@ -210,6 +210,17 @@ class GraphQLJavaGen
     end
   end
 
+  def get_number_required_list_fields(fields)
+    list_fields = 0
+    fields.each do |field|
+      type = field.type.unwrap_non_null
+      if type.kind == 'LIST'
+        list_fields += 1
+      end
+    end
+    list_fields
+  end
+
   def generate_build_output_code(expr, type, depth: 1, non_null: false, &block)
     if type.non_null?
       return generate_build_output_code(expr, type.of_type, depth: depth, non_null: true, &block)

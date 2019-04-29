@@ -76,26 +76,27 @@ public class <%= type.name %> implements Serializable {
     <% end %>
 
     public void appendTo(StringBuilder _queryBuilder) {
-      String separator = "";
-      _queryBuilder.append('{');
-      <% type.required_input_fields.each do |field| %>
-        _queryBuilder.append(separator);
-        separator = ",";
-        _queryBuilder.append("<%= field.name %>:");
-        <%= generate_build_input_code(escape_reserved_word(field.camelize_name), field.type) %>
-      <% end %>
-      <% type.optional_input_fields.each do |field| %>
-        if (this.<%= escape_reserved_word(field.camelize_name) %>.isDefined()) {
-          _queryBuilder.append(separator);
-          separator = ",";
-          _queryBuilder.append("<%= field.name %>:");
-          if (<%= escape_reserved_word(field.camelize_name) %>.getValue() != null) {
-            <%= generate_build_input_code(escape_reserved_word(field.camelize_name).concat(".getValue()"), field.type) %>
-          } else {
-            _queryBuilder.append("null");
-          }
-        }
-      <% end %>
-      _queryBuilder.append('}');
+        String separator = "";
+        _queryBuilder.append('{');
+        <% type.required_input_fields.each do |field| %>
+            _queryBuilder.append(separator);
+            separator = ",";
+            _queryBuilder.append("<%= field.name %>:");
+            <%= generate_build_input_code(escape_reserved_word(field.camelize_name), field.type) %>
+        <% end %>
+        <% depth = get_number_required_list_fields(type.required_input_fields) %>
+        <% type.optional_input_fields.each do |field| %>
+            if (this.<%= escape_reserved_word(field.camelize_name) %>.isDefined()) {
+                _queryBuilder.append(separator);
+                separator = ",";
+                _queryBuilder.append("<%= field.name %>:");
+                if (<%= escape_reserved_word(field.camelize_name) %>.getValue() != null) {
+                    <%= generate_build_input_code(escape_reserved_word(field.camelize_name).concat(".getValue()"), field.type, depth) %>
+                } else {
+                    _queryBuilder.append("null");
+                }
+            }
+        <% end %>
+        _queryBuilder.append('}');
     }
 }
